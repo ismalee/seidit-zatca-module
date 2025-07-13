@@ -1,0 +1,174 @@
+# SEIDiT License Admin - Private Repository
+# DO NOT commit sensitive information
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# SSL Certificates
+*.pem
+*.key
+*.crt
+*.cert
+ssl/
+certificates/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+seidit_licenses.db
+seidit_admin.db
+
+# Log files
+*.log
+logs/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.tmp
+
+# Configuration files with sensitive data
+config.py
+settings.py
+secrets.py
+credentials.py
+
+# License keys (for testing)
+test_licenses/
+sample_licenses/
+demo_licenses/
+
+# Customer data
+customer_data/
+customer_info/
+*.csv
+*.xlsx
+*.xls
+
+# Revenue data
+revenue_data/
+payment_data/
+financial_data/
+
+# Analytics data
+analytics_data/
+usage_data/
+metrics_data/
+
+# Temporary files
+temp/
+tmp/
+cache/
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# SEIDiT specific
+seidit_private_keys/
+seidit_master_keys/
+seidit_encryption_keys/
+seidit_hardware_fingerprints/
+seidit_license_keys/
+seidit_customer_data/
+seidit_revenue_data/
+seidit_analytics_data/
+seidit_backup/
+seidit_logs/
+seidit_temp/ 

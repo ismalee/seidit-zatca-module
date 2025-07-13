@@ -1,0 +1,73 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2024-01-01 00:00:00.000000",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": "api_key,secret_key,vat_number,company_name,base_url,test_mode",
+    "fields": [
+        {
+            "fieldname": "api_key",
+            "fieldtype": "Password",
+            "label": "API Key",
+            "reqd": 1
+        },
+        {
+            "fieldname": "secret_key",
+            "fieldtype": "Password",
+            "label": "Secret Key",
+            "reqd": 1
+        },
+        {
+            "fieldname": "vat_number",
+            "fieldtype": "Data",
+            "label": "VAT Number",
+            "reqd": 1
+        },
+        {
+            "fieldname": "company_name",
+            "fieldtype": "Data",
+            "label": "Company Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "base_url",
+            "fieldtype": "Data",
+            "label": "Base URL",
+            "default": "https://gw-fatoorah.zatca.gov.sa/e-invoicing/developer-portal",
+            "reqd": 1
+        },
+        {
+            "fieldname": "test_mode",
+            "fieldtype": "Check",
+            "label": "Test Mode",
+            "default": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2024-01-01 00:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "ZATCA",
+    "name": "ZATCA Settings",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "track_views": 1
+} 

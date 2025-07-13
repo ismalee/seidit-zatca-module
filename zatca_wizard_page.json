@@ -1,0 +1,27 @@
+{
+    "name": "zatca-setup-wizard",
+    "title": "ZATCA Setup Wizard",
+    "icon": "fa fa-cogs",
+    "module": "ZATCA",
+    "is_standard": 0,
+    "published": 1,
+    "modified": "2024-01-01 00:00:00.000000",
+    "creation": "2024-01-01 00:00:00.000000",
+    "modified_by": "Administrator",
+    "owner": "Administrator",
+    "docstatus": 0,
+    "idx": 0,
+    "content": "ZATCA Setup Wizard",
+    "content_type": "Page",
+    "route": "zatca-setup-wizard",
+    "reference_doctype": null,
+    "reference_docname": null,
+    "roles": [
+        {
+            "role": "System Manager"
+        },
+        {
+            "role": "Administrator"
+        }
+    ]
+} 

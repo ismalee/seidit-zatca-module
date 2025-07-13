@@ -1,0 +1,53 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="page-header">
+            <h1>ZATCA Setup Wizard</h1>
+        </div>
+        <div class="page-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Welcome to SEIDiT ZATCA Setup Wizard</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>This wizard will guide you through the ZATCA configuration process.</p>
+                            <p>Current Step: {{ wizard.step }}</p>
+                            <p>Installation ID: {{ wizard.installation_id }}</p>
+                            
+                            <div class="steps">
+                                <h4>Setup Steps:</h4>
+                                <ul>
+                                    {% for step in steps %}
+                                    <li {% if step == wizard.step %}class="active"{% endif %}>{{ step }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="nextStep()">Next Step</button>
+                                <button class="btn btn-secondary" onclick="previousStep()">Previous Step</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function nextStep() {
+    // Add JavaScript for step navigation
+    console.log('Next step clicked');
+}
+
+function previousStep() {
+    // Add JavaScript for step navigation
+    console.log('Previous step clicked');
+}
+</script>
+{% endblock %} 

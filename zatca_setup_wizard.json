@@ -1,0 +1,91 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "creation": "2024-01-01 00:00:00.000000",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": "current_step,vat_number,company_name,zatca_username,zatca_password,api_key,secret_key,test_mode,setup_complete",
+    "fields": [
+        {
+            "fieldname": "current_step",
+            "fieldtype": "Data",
+            "label": "Current Step",
+            "default": "welcome",
+            "read_only": 1
+        },
+        {
+            "fieldname": "vat_number",
+            "fieldtype": "Data",
+            "label": "VAT Number",
+            "placeholder": "Enter your 15-digit VAT number"
+        },
+        {
+            "fieldname": "company_name",
+            "fieldtype": "Data",
+            "label": "Company Name",
+            "placeholder": "Enter your company name"
+        },
+        {
+            "fieldname": "zatca_username",
+            "fieldtype": "Data",
+            "label": "ZATCA Username",
+            "placeholder": "Your ZATCA portal username"
+        },
+        {
+            "fieldname": "zatca_password",
+            "fieldtype": "Password",
+            "label": "ZATCA Password",
+            "placeholder": "Your ZATCA portal password"
+        },
+        {
+            "fieldname": "api_key",
+            "fieldtype": "Password",
+            "label": "API Key",
+            "placeholder": "API key from ZATCA developer portal"
+        },
+        {
+            "fieldname": "secret_key",
+            "fieldtype": "Password",
+            "label": "Secret Key",
+            "placeholder": "Secret key from ZATCA developer portal"
+        },
+        {
+            "fieldname": "test_mode",
+            "fieldtype": "Check",
+            "label": "Test Mode",
+            "default": 1
+        },
+        {
+            "fieldname": "setup_complete",
+            "fieldtype": "Check",
+            "label": "Setup Complete",
+            "read_only": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2024-01-01 00:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "ZATCA",
+    "name": "ZATCA Setup Wizard",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "track_views": 1
+} 

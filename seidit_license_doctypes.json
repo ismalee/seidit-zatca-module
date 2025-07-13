@@ -1,0 +1,222 @@
+{
+    "SEIDiT License Usage": {
+        "actions": [],
+        "allow_rename": 1,
+        "creation": "2024-01-01 00:00:00.000000",
+        "doctype": "DocType",
+        "engine": "InnoDB",
+        "field_order": "license_key,installation_id,used_at,site_name,provider",
+        "fields": [
+            {
+                "fieldname": "license_key",
+                "fieldtype": "Password",
+                "label": "License Key",
+                "reqd": 1
+            },
+            {
+                "fieldname": "installation_id",
+                "fieldtype": "Data",
+                "label": "Installation ID",
+                "reqd": 1,
+                "read_only": 1
+            },
+            {
+                "fieldname": "used_at",
+                "fieldtype": "Datetime",
+                "label": "Used At",
+                "reqd": 1,
+                "read_only": 1
+            },
+            {
+                "fieldname": "site_name",
+                "fieldtype": "Data",
+                "label": "Site Name",
+                "read_only": 1
+            },
+            {
+                "fieldname": "provider",
+                "fieldtype": "Data",
+                "label": "Provider",
+                "default": "SEIDiT",
+                "read_only": 1
+            }
+        ],
+        "index_web_pages_for_search": 1,
+        "links": [],
+        "modified": "2024-01-01 00:00:00.000000",
+        "modified_by": "Administrator",
+        "module": "SEIDiT ZATCA",
+        "name": "SEIDiT License Usage",
+        "owner": "Administrator",
+        "permissions": [
+            {
+                "create": 1,
+                "delete": 1,
+                "email": 1,
+                "export": 1,
+                "print": 1,
+                "read": 1,
+                "report": 1,
+                "role": "System Manager",
+                "share": 1,
+                "write": 1
+            }
+        ],
+        "sort_field": "modified",
+        "sort_order": "DESC",
+        "states": [],
+        "track_changes": 1,
+        "track_views": 1
+    },
+    "SEIDiT Usage Log": {
+        "actions": [],
+        "allow_rename": 1,
+        "creation": "2024-01-01 00:00:00.000000",
+        "doctype": "DocType",
+        "engine": "InnoDB",
+        "field_order": "invoice,usage_type,timestamp,provider",
+        "fields": [
+            {
+                "fieldname": "invoice",
+                "fieldtype": "Link",
+                "label": "Invoice",
+                "options": "Sales Invoice"
+            },
+            {
+                "fieldname": "usage_type",
+                "fieldtype": "Select",
+                "label": "Usage Type",
+                "options": "invoice_processing\nqr_generation\nxml_generation\nzatca_reporting",
+                "reqd": 1
+            },
+            {
+                "fieldname": "timestamp",
+                "fieldtype": "Datetime",
+                "label": "Timestamp",
+                "reqd": 1,
+                "read_only": 1
+            },
+            {
+                "fieldname": "provider",
+                "fieldtype": "Data",
+                "label": "Provider",
+                "default": "SEIDiT",
+                "read_only": 1
+            }
+        ],
+        "index_web_pages_for_search": 1,
+        "links": [],
+        "modified": "2024-01-01 00:00:00.000000",
+        "modified_by": "Administrator",
+        "module": "SEIDiT ZATCA",
+        "name": "SEIDiT Usage Log",
+        "owner": "Administrator",
+        "permissions": [
+            {
+                "create": 1,
+                "delete": 1,
+                "email": 1,
+                "export": 1,
+                "print": 1,
+                "read": 1,
+                "report": 1,
+                "role": "System Manager",
+                "share": 1,
+                "write": 1
+            }
+        ],
+        "sort_field": "modified",
+        "sort_order": "DESC",
+        "states": [],
+        "track_changes": 1,
+        "track_views": 1
+    },
+    "SEIDiT Installation Info": {
+        "actions": [],
+        "allow_rename": 1,
+        "creation": "2024-01-01 00:00:00.000000",
+        "doctype": "DocType",
+        "engine": "InnoDB",
+        "field_order": "installation_id,site_name,site_path,system_info,hardware_info,timestamp,provider,version",
+        "fields": [
+            {
+                "fieldname": "installation_id",
+                "fieldtype": "Data",
+                "label": "Installation ID",
+                "reqd": 1,
+                "read_only": 1
+            },
+            {
+                "fieldname": "site_name",
+                "fieldtype": "Data",
+                "label": "Site Name",
+                "read_only": 1
+            },
+            {
+                "fieldname": "site_path",
+                "fieldtype": "Data",
+                "label": "Site Path",
+                "read_only": 1
+            },
+            {
+                "fieldname": "system_info",
+                "fieldtype": "Code",
+                "label": "System Information",
+                "options": "JSON",
+                "read_only": 1
+            },
+            {
+                "fieldname": "hardware_info",
+                "fieldtype": "Code",
+                "label": "Hardware Information",
+                "options": "JSON",
+                "read_only": 1
+            },
+            {
+                "fieldname": "timestamp",
+                "fieldtype": "Datetime",
+                "label": "Timestamp",
+                "read_only": 1
+            },
+            {
+                "fieldname": "provider",
+                "fieldtype": "Data",
+                "label": "Provider",
+                "default": "SEIDiT",
+                "read_only": 1
+            },
+            {
+                "fieldname": "version",
+                "fieldtype": "Data",
+                "label": "Version",
+                "read_only": 1
+            }
+        ],
+        "index_web_pages_for_search": 1,
+        "links": [],
+        "modified": "2024-01-01 00:00:00.000000",
+        "modified_by": "Administrator",
+        "module": "SEIDiT ZATCA",
+        "name": "SEIDiT Installation Info",
+        "owner": "Administrator",
+        "permissions": [
+            {
+                "create": 1,
+                "delete": 1,
+                "email": 1,
+                "export": 1,
+                "print": 1,
+                "read": 1,
+                "report": 1,
+                "role": "System Manager",
+                "share": 1,
+                "write": 1
+            }
+        ],
+        "sort_field": "modified",
+        "sort_order": "DESC",
+        "states": [],
+        "track_changes": 1,
+        "track_views": 1
+    }
+} 

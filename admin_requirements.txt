@@ -1,0 +1,81 @@
+# SEIDiT License Administration System Requirements
+# Copyright (c) 2024 SEIDiT (https://seidit.com)
+# PRIVATE REPOSITORY - DO NOT SHARE
+
+# Core dependencies
+frappe>=14.0.0
+erpnext>=14.0.0
+
+# Web framework
+flask>=2.0.1
+flask-cors>=3.0.10
+
+# Database
+mysql-connector-python>=8.0.26
+sqlite3
+
+# Security and encryption
+cryptography>=3.4.8
+pycryptodome>=3.10.1
+fernet>=1.0.1
+
+# API and networking
+requests>=2.26.0
+urllib3>=1.26.7
+
+# Hardware fingerprinting
+psutil>=5.8.0
+
+# Anti-debugging protection
+pyarmor>=7.7.4
+
+# Analytics and monitoring
+prometheus-client>=0.11.0
+statsd>=3.3.0
+
+# SSL and certificates
+pyopenssl>=20.0.1
+cryptography>=3.4.8
+
+# Development dependencies
+pytest>=6.2.5
+pytest-cov>=2.12.1
+black>=21.7b0
+flake8>=3.9.2
+
+# Backup and monitoring
+schedule>=1.1.0
+python-dotenv>=0.19.0
+
+# Logging
+structlog>=21.1.0
+colorama>=0.4.4
+
+# Database migrations
+alembic>=1.7.1
+
+# Email notifications
+smtplib
+email
+
+# File handling
+pathlib>=1.0.1
+shutil
+
+# Time and date
+datetime
+timezone
+
+# JSON and data processing
+json
+csv
+xml.etree.ElementTree
+
+# System information
+platform
+os
+sys
+uuid
+hashlib
+hmac
+base64 

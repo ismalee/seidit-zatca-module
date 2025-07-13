@@ -1,0 +1,39 @@
+# SEIDiT ZATCA Phase 2 Module Requirements
+# Copyright (c) 2024 SEIDiT (https://seidit.com)
+
+# Core dependencies
+frappe>=14.0.0
+erpnext>=14.0.0
+
+# ZATCA compliance
+cryptography>=3.4.8
+lxml>=4.6.3
+qrcode>=7.3
+Pillow>=8.3.2
+
+# API and networking
+requests>=2.26.0
+urllib3>=1.26.7
+
+# Security and encryption
+pycryptodome>=3.10.1
+cryptography>=3.4.8
+
+# QR code generation
+qrcode[pil]>=7.3
+
+# XML processing
+lxml>=4.6.3
+xmltodict>=0.12.0
+
+# Hardware fingerprinting
+psutil>=5.8.0
+
+# Anti-debugging protection
+pyarmor>=7.7.4
+
+# Development dependencies (optional)
+pytest>=6.2.5
+pytest-cov>=2.12.1
+black>=21.7b0
+flake8>=3.9.2 
