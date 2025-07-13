@@ -35,7 +35,7 @@ class SEIDiTSecureLicenseServer:
     """
     
     def __init__(self):
-        self.server_url = "https://license.seidit.com/api/v1"
+        self.server_url = "https://154.90.50.194/api/method/seidit_license_server.validate_license"
         self.api_key = "seidit_license_server_key_2024"
         self.secret_key = "seidit_license_secret_2024_secure"
         self.provider = "SEIDiT"

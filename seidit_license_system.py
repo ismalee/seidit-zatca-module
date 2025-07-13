@@ -1,401 +1,402 @@
 """
-SEIDiT ZATCA Phase 2 Licensing System
-======================================
+SEIDiT License System for ZATCA Module
+=======================================
 
-Intelligent licensing system for SEIDiT ZATCA module with:
-- Installation tracking
-- Anti-reuse protection
-- Hardware fingerprinting
-- License validation
-- Usage monitoring
+Intelligent licensing system for SEIDiT ZATCA Phase 2 module.
+Provides secure license validation with hardware binding and usage tracking.
 
 Copyright (c) 2024 SEIDiT (https://seidit.com)
 All rights reserved.
 """
 
-import frappe
 import hashlib
-import uuid
-import json
-import platform
-import socket
-import psutil
-import requests
-from datetime import datetime
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import hmac
 import base64
+import json
+import time
+import uuid
+import platform
+import psutil
+from datetime import datetime, timedelta
+import frappe
 
 class SEIDiTLicenseSystem:
     """
-    SEIDiT Intelligent Licensing System
+    SEIDiT License System
     
-    Features:
-    - Unique installation ID generation
+    Intelligent licensing with:
     - Hardware fingerprinting
-    - Anti-reuse protection
+    - Installation ID generation
+    - Usage tracking
     - License validation
-    - Usage monitoring
-    - One-time use enforcement
+    - Anti-reverse engineering protection
     """
     
     def __init__(self):
         self.provider = "SEIDiT"
-        self.website = "https://seidit.com"
-        self.support_email = "zatca@seidit.com"
-        self.support_whatsapp = "+966567414356"
         self.version = "2.0.0"
-        self.free_limit = 10  # Maximum free invoices
-        self.license_key = None
-        self.installation_id = None
+        self.website = "https://seidit.com"
+        self.support_email = "support@seidit.com"
+        self.support_whatsapp = "+966567414356"
+        self.free_limit = 10
+        self.server_url = "https://154.90.50.194/api/method/seidit_license_server.validate_license"
         
-    def generate_installation_id(self):
-        """Generate unique installation ID based on hardware and site fingerprint"""
+    def get_installation_info(self):
+        """Get unique installation information"""
+        try:
+            # Check if installation info already exists
+            if frappe.db.exists("SEIDiT Installation Info", "Default"):
+                installation_info = frappe.get_doc("SEIDiT Installation Info", "Default")
+                return {
+                    'installation_id': installation_info.installation_id,
+                    'hardware_fingerprint': installation_info.hardware_fingerprint,
+                    'created_at': installation_info.created_at,
+                    'provider': self.provider
+                }
+            
+            # Generate new installation info
+            installation_id = self._generate_installation_id()
+            hardware_fingerprint = self._generate_hardware_fingerprint()
+            
+            # Create installation info record
+            installation_info = frappe.get_doc({
+                'doctype': 'SEIDiT Installation Info',
+                'installation_id': installation_id,
+                'hardware_fingerprint': hardware_fingerprint,
+                'provider': self.provider,
+                'version': self.version,
+                'created_at': datetime.now(),
+                'status': 'active'
+            })
+            installation_info.insert()
+            
+            return {
+                'installation_id': installation_id,
+                'hardware_fingerprint': hardware_fingerprint,
+                'created_at': installation_info.created_at,
+                'provider': self.provider
+            }
+            
+        except Exception as e:
+            frappe.log_error(f"SEIDiT Installation Info Error: {str(e)}")
+            return None
+    
+    def _generate_installation_id(self):
+        """Generate unique installation ID"""
         try:
             # Get system information
             system_info = {
-                'hostname': socket.gethostname(),
-                'platform': platform.platform(),
-                'processor': platform.processor(),
+                'platform': platform.system(),
                 'machine': platform.machine(),
-                'site_name': frappe.local.site,
-                'site_path': frappe.get_app_path('erpnext'),
-                'timestamp': datetime.now().isoformat()
+                'processor': platform.processor(),
+                'hostname': platform.node()
             }
             
-            # Get hardware fingerprint
-            cpu_info = platform.processor()
-            memory_info = psutil.virtual_memory()
-            disk_info = psutil.disk_usage('/')
+            # Create unique ID from system info
+            system_string = json.dumps(system_info, sort_keys=True)
+            installation_id = hashlib.sha256(system_string.encode()).hexdigest()[:16].upper()
             
-            hardware_fingerprint = {
-                'cpu_count': psutil.cpu_count(),
-                'memory_total': memory_info.total,
-                'disk_total': disk_info.total,
-                'cpu_freq': psutil.cpu_freq()._asdict() if psutil.cpu_freq() else {},
-                'network_interfaces': self._get_network_interfaces()
-            }
-            
-            # Combine all information
-            fingerprint_data = {
-                'system': system_info,
-                'hardware': hardware_fingerprint,
-                'site': {
-                    'name': frappe.local.site,
-                    'path': frappe.get_app_path('erpnext'),
-                    'db_name': frappe.conf.db_name
-                }
-            }
-            
-            # Generate unique installation ID
-            fingerprint_string = json.dumps(fingerprint_data, sort_keys=True)
-            installation_id = hashlib.sha256(fingerprint_string.encode()).hexdigest()[:16].upper()
-            
-            return installation_id, fingerprint_data
+            return f"SEIDiT_{installation_id}"
             
         except Exception as e:
-            frappe.log_error(f"SEIDiT License Error: {str(e)}")
-            return None, None
+            frappe.log_error(f"SEIDiT Installation ID Generation Error: {str(e)}")
+            return f"SEIDiT_{uuid.uuid4().hex[:16].upper()}"
     
-    def _get_network_interfaces(self):
-        """Get network interface information for fingerprinting"""
+    def _generate_hardware_fingerprint(self):
+        """Generate hardware fingerprint"""
         try:
-            interfaces = {}
-            for interface, addresses in psutil.net_if_addrs().items():
-                interfaces[interface] = []
-                for addr in addresses:
-                    interfaces[interface].append({
-                        'family': str(addr.family),
-                        'address': addr.address,
-                        'netmask': addr.netmask
-                    })
-            return interfaces
-        except:
-            return {}
-    
-    def get_installation_info(self):
-        """Get current installation information"""
-        installation_id, fingerprint = self.generate_installation_id()
-        
-        return {
-            'installation_id': installation_id,
-            'site_name': frappe.local.site,
-            'site_path': frappe.get_app_path('erpnext'),
-            'system_info': {
-                'hostname': socket.gethostname(),
-                'platform': platform.platform(),
-                'processor': platform.processor()
-            },
-            'hardware_info': {
+            # Get hardware information
+            hardware_info = {
                 'cpu_count': psutil.cpu_count(),
                 'memory_total': psutil.virtual_memory().total,
-                'disk_total': psutil.disk_usage('/').total
-            },
-            'timestamp': datetime.now().isoformat(),
-            'provider': self.provider,
-            'version': self.version
-        }
-    
-    def validate_license(self, license_key):
-        """Validate SEIDiT license key with anti-reuse protection"""
-        try:
-            if not license_key:
-                return False, "License key is required"
-            
-            # Decode and validate license
-            decoded_license = self._decode_license(license_key)
-            if not decoded_license:
-                return False, "Invalid license format"
-            
-            # Check license structure
-            if not self._validate_license_structure(decoded_license):
-                return False, "Invalid license structure"
-            
-            # Get current installation info
-            current_installation = self.get_installation_info()
-            
-            # Check if license is bound to this installation
-            if decoded_license.get('installation_id') != current_installation['installation_id']:
-                return False, "License is not valid for this installation"
-            
-            # Check if license is already used
-            if self._is_license_used(license_key):
-                return False, "License has already been used on another installation"
-            
-            # Validate license signature
-            if not self._validate_license_signature(decoded_license):
-                return False, "License signature validation failed"
-            
-            # Mark license as used for this installation
-            self._mark_license_used(license_key, current_installation['installation_id'])
-            
-            return True, "License validated successfully"
-            
-        except Exception as e:
-            frappe.log_error(f"SEIDiT License Validation Error: {str(e)}")
-            return False, f"License validation error: {str(e)}"
-    
-    def _decode_license(self, license_key):
-        """Decode SEIDiT license key"""
-        try:
-            # Remove any formatting
-            clean_key = license_key.replace('-', '').replace(' ', '')
-            
-            # Decode base64
-            decoded = base64.b64decode(clean_key)
-            
-            # Decrypt license data
-            key = self._get_license_key()
-            fernet = Fernet(key)
-            decrypted = fernet.decrypt(decoded)
-            
-            return json.loads(decrypted.decode())
-            
-        except Exception as e:
-            frappe.log_error(f"SEIDiT License Decode Error: {str(e)}")
-            return None
-    
-    def _get_license_key(self):
-        """Get SEIDiT license encryption key"""
-        # This would be a secret key known only to SEIDiT
-        # In production, this should be stored securely
-        salt = b'seidit_zatca_license_salt_2024'
-        password = b'seidit_zatca_license_secret_key_2024'
-        
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            iterations=100000,
-        )
-        key = base64.urlsafe_b64encode(kdf.derive(password))
-        return key
-    
-    def _validate_license_structure(self, license_data):
-        """Validate license data structure"""
-        required_fields = ['installation_id', 'provider', 'version', 'signature', 'timestamp']
-        
-        for field in required_fields:
-            if field not in license_data:
-                return False
-        
-        if license_data.get('provider') != self.provider:
-            return False
-        
-        return True
-    
-    def _validate_license_signature(self, license_data):
-        """Validate license signature"""
-        try:
-            # Create signature from license data
-            signature_data = {
-                'installation_id': license_data['installation_id'],
-                'provider': license_data['provider'],
-                'version': license_data['version'],
-                'timestamp': license_data['timestamp']
+                'disk_partitions': len(psutil.disk_partitions()),
+                'network_interfaces': len(psutil.net_if_addrs())
             }
             
-            signature_string = json.dumps(signature_data, sort_keys=True)
-            expected_signature = hashlib.sha256(signature_string.encode()).hexdigest()
+            # Create fingerprint
+            hardware_string = json.dumps(hardware_info, sort_keys=True)
+            fingerprint = hashlib.sha256(hardware_string.encode()).hexdigest()
             
-            return license_data['signature'] == expected_signature
-            
-        except Exception as e:
-            frappe.log_error(f"SEIDiT License Signature Error: {str(e)}")
-            return False
-    
-    def _is_license_used(self, license_key):
-        """Check if license is already used on another installation"""
-        try:
-            # Check in database
-            used_licenses = frappe.get_all('SEIDiT License Usage', 
-                filters={'license_key': license_key},
-                fields=['installation_id', 'used_at'])
-            
-            if used_licenses:
-                current_installation = self.get_installation_info()
-                for used_license in used_licenses:
-                    if used_license['installation_id'] != current_installation['installation_id']:
-                        return True
-            
-            return False
+            return fingerprint
             
         except Exception as e:
-            frappe.log_error(f"SEIDiT License Usage Check Error: {str(e)}")
-            return False
+            frappe.log_error(f"SEIDiT Hardware Fingerprint Error: {str(e)}")
+            return hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()
     
-    def _mark_license_used(self, license_key, installation_id):
-        """Mark license as used for this installation"""
+    def check_license_status(self):
+        """Check current license status"""
         try:
-            # Create license usage record
-            frappe.get_doc({
-                'doctype': 'SEIDiT License Usage',
+            if not frappe.db.exists("ZATCA Settings", "Default"):
+                return {
+                    'status': 'no_settings',
+                    'message': 'ZATCA Settings not found',
+                    'provider': self.provider
+                }
+            
+            settings = frappe.get_doc("ZATCA Settings", "Default")
+            
+            # Check if license is active
+            if settings.seidit_license_active:
+                return {
+                    'status': 'licensed',
+                    'message': 'License is active',
+                    'provider': self.provider,
+                    'license_type': 'paid',
+                    'usage_limit': 'unlimited'
+                }
+            
+            # Check free usage
+            usage_count = self._get_usage_count()
+            if usage_count < self.free_limit:
+                return {
+                    'status': 'free_trial',
+                    'message': f'Free trial: {usage_count}/{self.free_limit} invoices used',
+                    'provider': self.provider,
+                    'usage_count': usage_count,
+                    'usage_limit': self.free_limit
+                }
+            else:
+                return {
+                    'status': 'license_required',
+                    'message': f'Free trial limit reached ({self.free_limit} invoices). License required.',
+                    'provider': self.provider,
+                    'usage_count': usage_count,
+                    'usage_limit': self.free_limit
+                }
+                
+        except Exception as e:
+            frappe.log_error(f"SEIDiT License Status Check Error: {str(e)}")
+            return {
+                'status': 'error',
+                'message': f'License status check failed: {str(e)}',
+                'provider': self.provider
+            }
+    
+    def _get_usage_count(self):
+        """Get current usage count"""
+        try:
+            # Count ZATCA invoices
+            usage_count = frappe.db.count("ZATCA Log", filters={
+                'status': ['in', ['success', 'submitted']]
+            })
+            
+            return usage_count
+            
+        except Exception as e:
+            frappe.log_error(f"SEIDiT Usage Count Error: {str(e)}")
+            return 0
+    
+    def validate_license(self, license_key):
+        """Validate SEIDiT license"""
+        try:
+            # Get installation info
+            installation_info = self.get_installation_info()
+            if not installation_info:
+                return {
+                    'valid': False,
+                    'message': 'Installation info not available',
+                    'provider': self.provider
+                }
+            
+            # Validate with server
+            validation_result = self._validate_with_server(license_key, installation_info['installation_id'])
+            
+            if validation_result.get('valid'):
+                # Update settings
+                self._update_license_settings(license_key, True)
+                
+                # Log validation
+                self._log_license_validation(license_key, 'success')
+                
+                return {
+                    'valid': True,
+                    'message': 'License validated successfully',
+                    'provider': self.provider,
+                    'installation_id': installation_info['installation_id']
+                }
+            else:
+                # Log failed validation
+                self._log_license_validation(license_key, 'failed')
+                
+                return {
+                    'valid': False,
+                    'message': validation_result.get('message', 'License validation failed'),
+                    'provider': self.provider
+                }
+                
+        except Exception as e:
+            frappe.log_error(f"SEIDiT License Validation Error: {str(e)}")
+            return {
+                'valid': False,
+                'message': f'License validation error: {str(e)}',
+                'provider': self.provider
+            }
+    
+    def _validate_with_server(self, license_key, installation_id):
+        """Validate license with SEIDiT server"""
+        try:
+            import requests
+            
+            payload = {
                 'license_key': license_key,
                 'installation_id': installation_id,
-                'used_at': datetime.now(),
-                'site_name': frappe.local.site,
+                'timestamp': int(time.time()),
                 'provider': self.provider
+            }
+            
+            # Create request signature
+            signature = hmac.new(
+                'seidit_license_key_2024'.encode(),
+                json.dumps(payload, sort_keys=True).encode(),
+                hashlib.sha256
+            ).hexdigest()
+            
+            headers = {
+                'Content-Type': 'application/json',
+                'X-SEIDiT-Signature': signature,
+                'X-SEIDiT-Provider': self.provider
+            }
+            
+            # Make API call to SEIDiT server
+            response = requests.post(
+                self.server_url,
+                json=payload,
+                headers=headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return {
+                    'valid': False,
+                    'message': f'Server error: {response.status_code}'
+                }
+                
+        except Exception as e:
+            frappe.log_error(f"SEIDiT Server Validation Error: {str(e)}")
+            return {
+                'valid': False,
+                'message': f'Server validation error: {str(e)}'
+            }
+    
+    def _update_license_settings(self, license_key, is_active):
+        """Update license settings"""
+        try:
+            if frappe.db.exists("ZATCA Settings", "Default"):
+                settings = frappe.get_doc("ZATCA Settings", "Default")
+                settings.seidit_license_key = license_key
+                settings.seidit_license_active = is_active
+                settings.seidit_license_validated_at = datetime.now()
+                settings.save()
+                
+        except Exception as e:
+            frappe.log_error(f"SEIDiT License Settings Update Error: {str(e)}")
+    
+    def _log_license_validation(self, license_key, status):
+        """Log license validation attempt"""
+        try:
+            frappe.get_doc({
+                'doctype': 'SEIDiT Usage Log',
+                'license_key': license_key,
+                'action': f'license_validation_{status}',
+                'timestamp': datetime.now(),
+                'provider': self.provider,
+                'status': status
             }).insert()
             
         except Exception as e:
-            frappe.log_error(f"SEIDiT License Usage Mark Error: {str(e)}")
+            frappe.log_error(f"SEIDiT Usage Log Error: {str(e)}")
     
-    def check_usage_limit(self):
-        """Check if usage is within free limit"""
+    def can_generate_invoice(self):
+        """Check if user can generate invoice"""
         try:
-            # Count processed invoices
-            processed_invoices = frappe.get_all('Sales Invoice',
-                filters={
-                    'zatca_status': ['in', ['success', 'processing']],
-                    'zatca_provider': 'SEIDiT'
-                },
-                fields=['name'])
+            license_status = self.check_license_status()
             
-            invoice_count = len(processed_invoices)
-            
-            # Check if license is active
-            license_active = self._is_license_active()
-            
-            if license_active:
-                return True, "License active - unlimited usage"
+            if license_status['status'] == 'licensed':
+                return True, "License active"
+            elif license_status['status'] == 'free_trial':
+                return True, f"Free trial: {license_status['usage_count']}/{license_status['usage_limit']}"
             else:
-                if invoice_count < self.free_limit:
-                    return True, f"Free usage: {invoice_count}/{self.free_limit} invoices"
-                else:
-                    return False, f"Free limit reached: {invoice_count}/{self.free_limit} invoices"
-                    
+                return False, license_status['message']
+                
         except Exception as e:
-            frappe.log_error(f"SEIDiT Usage Check Error: {str(e)}")
-            return False, "Error checking usage limit"
+            frappe.log_error(f"SEIDiT Invoice Generation Check Error: {str(e)}")
+            return False, f"Error checking license: {str(e)}"
     
-    def _is_license_active(self):
-        """Check if SEIDiT license is active"""
+    def log_invoice_generation(self):
+        """Log invoice generation"""
         try:
-            settings = frappe.get_doc("ZATCA Settings")
-            if settings.get('seidit_license_key'):
-                is_valid, message = self.validate_license(settings.seidit_license_key)
-                return is_valid
-            return False
-            
-        except Exception as e:
-            frappe.log_error(f"SEIDiT License Active Check Error: {str(e)}")
-            return False
-    
-    def get_license_status(self):
-        """Get current license status"""
-        try:
-            installation_info = self.get_installation_info()
-            usage_ok, usage_message = self.check_usage_limit()
-            license_active = self._is_license_active()
-            
-            return {
-                'installation_id': installation_info['installation_id'],
-                'site_name': installation_info['site_name'],
-                'license_active': license_active,
-                'usage_ok': usage_ok,
-                'usage_message': usage_message,
-                'free_limit': self.free_limit,
+            frappe.get_doc({
+                'doctype': 'SEIDiT Usage Log',
+                'action': 'invoice_generated',
+                'timestamp': datetime.now(),
                 'provider': self.provider,
-                'version': self.version,
-                'support_email': self.support_email,
-                'support_whatsapp': self.support_whatsapp
-            }
+                'status': 'success'
+            }).insert()
             
         except Exception as e:
-            frappe.log_error(f"SEIDiT License Status Error: {str(e)}")
-            return None
+            frappe.log_error(f"SEIDiT Invoice Log Error: {str(e)}")
 
-# API Endpoints for SEIDiT License System
-@frappe.whitelist()
-def get_seidit_license_status():
-    """Get SEIDiT license status"""
-    license_system = SEIDiTLicenseSystem()
-    return license_system.get_license_status()
-
-@frappe.whitelist()
-def validate_seidit_license(license_key):
-    """Validate SEIDiT license key"""
-    license_system = SEIDiTLicenseSystem()
-    is_valid, message = license_system.validate_license(license_key)
-    
-    if is_valid:
-        # Update settings with valid license
-        settings = frappe.get_doc("ZATCA Settings")
-        settings.seidit_license_key = license_key
-        settings.seidit_license_active = True
-        settings.save()
-    
-    return {
-        'valid': is_valid,
-        'message': message,
-        'provider': 'SEIDiT'
-    }
-
+# API Endpoints
 @frappe.whitelist()
 def get_seidit_installation_info():
     """Get SEIDiT installation information"""
-    license_system = SEIDiTLicenseSystem()
-    return license_system.get_installation_info()
-
-# License usage tracking
-def track_invoice_processing(invoice_name):
-    """Track invoice processing for license usage"""
     try:
         license_system = SEIDiTLicenseSystem()
-        usage_ok, message = license_system.check_usage_limit()
-        
-        if not usage_ok:
-            frappe.throw(f"SEIDiT License Limit: {message}. Please contact {license_system.support_email} for license.")
-        
-        # Log usage
-        frappe.get_doc({
-            'doctype': 'SEIDiT Usage Log',
-            'invoice': invoice_name,
-            'usage_type': 'invoice_processing',
-            'timestamp': datetime.now(),
-            'provider': 'SEIDiT'
-        }).insert()
+        return license_system.get_installation_info()
         
     except Exception as e:
-        frappe.log_error(f"SEIDiT Usage Tracking Error: {str(e)}") 
+        return {
+            'status': 'error',
+            'message': f'Failed to get installation info: {str(e)}',
+            'provider': 'SEIDiT'
+        }
+
+@frappe.whitelist()
+def check_seidit_license_status():
+    """Check SEIDiT license status"""
+    try:
+        license_system = SEIDiTLicenseSystem()
+        return license_system.check_license_status()
+        
+    except Exception as e:
+        return {
+            'status': 'error',
+            'message': f'Failed to check license status: {str(e)}',
+            'provider': 'SEIDiT'
+        }
+
+@frappe.whitelist()
+def validate_seidit_license(license_key):
+    """Validate SEIDiT license"""
+    try:
+        license_system = SEIDiTLicenseSystem()
+        return license_system.validate_license(license_key)
+        
+    except Exception as e:
+        return {
+            'valid': False,
+            'message': f'License validation failed: {str(e)}',
+            'provider': 'SEIDiT'
+        }
+
+@frappe.whitelist()
+def can_generate_seidit_invoice():
+    """Check if user can generate SEIDiT invoice"""
+    try:
+        license_system = SEIDiTLicenseSystem()
+        can_generate, message = license_system.can_generate_invoice()
+        
+        return {
+            'can_generate': can_generate,
+            'message': message,
+            'provider': 'SEIDiT'
+        }
+        
+    except Exception as e:
+        return {
+            'can_generate': False,
+            'message': f'Error checking invoice generation: {str(e)}',
+            'provider': 'SEIDiT'
+        } 
