@@ -144,8 +144,8 @@ GET /api/method/zatca_setup_wizard.get_installation_info
 ## Support
 
 ### **SEIDiT Support**
-- **Email**: support@seidit.com
-- **Phone**: +966-XX-XXXXXXX
+- **Email**: anas@seidit.com
+- **Phone**: +966-56-7414356
 - **Website**: https://seidit.com
 - **Support Hours**: 24/7
 
