@@ -305,10 +305,12 @@ def create_menu_items():
             'name': 'zatca-setup-wizard',
             'title': 'ZATCA Setup Wizard',
             'module': 'SEIDiT ZATCA',
-            'template': 'zatca-setup-wizard.html'
+            'template': 'zatca-setup-wizard.html',
+            'published': 1
         }).insert()
+        print("✅ Created ZATCA Setup Wizard page")
     
-    # Create menu item
+    # Create menu item in Desk
     if not frappe.db.exists("Desktop Icon", "ZATCA Setup Wizard"):
         frappe.get_doc({
             'doctype': 'Desktop Icon',
@@ -318,10 +320,42 @@ def create_menu_items():
             'type': 'page',
             'link': 'zatca-setup-wizard',
             'color': '#007bff',
-            'description': 'Complete ZATCA Phase 2 setup wizard'
+            'description': 'Complete ZATCA Phase 2 setup wizard',
+            'category': 'Integrations'
         }).insert()
+        print("✅ Created ZATCA Setup Wizard menu item")
     
-    print("✅ Created menu items")
+    # Create ZATCA Settings menu item
+    if not frappe.db.exists("Desktop Icon", "ZATCA Settings"):
+        frappe.get_doc({
+            'doctype': 'Desktop Icon',
+            'module_name': 'SEIDiT ZATCA',
+            'label': 'ZATCA Settings',
+            'icon': 'octicon octicon-settings',
+            'type': 'doctype',
+            'link': 'ZATCA Settings',
+            'color': '#28a745',
+            'description': 'Configure ZATCA settings and credentials',
+            'category': 'Integrations'
+        }).insert()
+        print("✅ Created ZATCA Settings menu item")
+    
+    # Create ZATCA Logs menu item
+    if not frappe.db.exists("Desktop Icon", "ZATCA Logs"):
+        frappe.get_doc({
+            'doctype': 'Desktop Icon',
+            'module_name': 'SEIDiT ZATCA',
+            'label': 'ZATCA Logs',
+            'icon': 'octicon octicon-list-ordered',
+            'type': 'doctype',
+            'link': 'ZATCA Log',
+            'color': '#ffc107',
+            'description': 'View ZATCA processing logs and status',
+            'category': 'Integrations'
+        }).insert()
+        print("✅ Created ZATCA Logs menu item")
+    
+    print("✅ Created all menu items")
 
 def uninstall():
     """Uninstall SEIDiT ZATCA Module"""

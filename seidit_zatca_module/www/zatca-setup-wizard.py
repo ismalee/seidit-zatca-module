@@ -1,43 +1,27 @@
-# -*- coding: utf-8 -*-
 """
-ZATCA Setup Wizard Page
+ZATCA Setup Wizard Page Controller
+==================================
+
+Controller for the ZATCA Setup Wizard page.
+
+Copyright (c) 2024 SEIDiT (https://seidit.com)
+All rights reserved.
 """
 
 import frappe
-from frappe import _
 
 def get_context(context):
-    """Get context for ZATCA Setup Wizard page"""
-    context.title = _("ZATCA Setup Wizard")
+    """Get context for the ZATCA Setup Wizard page"""
+    context.title = "ZATCA Setup Wizard"
     context.breadcrumbs = [
-        {"label": _("Home"), "route": "/"},
-        {"label": _("ZATCA Setup Wizard"), "route": "/app/zatca-setup-wizard"}
+        {"label": "Home", "url": "/"},
+        {"label": "ZATCA Setup Wizard", "url": "/zatca-setup-wizard"}
     ]
     
-    # Get or create ZATCA Setup Wizard
-    if not frappe.db.exists("ZATCA Setup Wizard", "Default"):
-        frappe.get_doc({
-            'doctype': 'ZATCA Setup Wizard',
-            'name': 'Default',
-            'step': 'Welcome',
-            'vat_number': '',
-            'company_name': '',
-            'api_key': '',
-            'secret_key': '',
-            'test_mode': 1,
-            'installation_id': frappe.generate_hash(length=16)
-        }).insert()
+    # Add any additional context data
+    context.provider = "SEIDiT"
+    context.version = "2.0.0"
+    context.support_email = "support@seidit.com"
+    context.support_whatsapp = "+966567414356"
     
-    wizard = frappe.get_doc("ZATCA Setup Wizard", "Default")
-    context.wizard = wizard
-    context.steps = [
-        "Welcome",
-        "VAT Registration", 
-        "ZATCA Portal Access",
-        "API Credentials",
-        "Test Connection",
-        "Live Activation",
-        "Invoice Testing",
-        "License Warning",
-        "Completion"
-    ] 
+    return context 

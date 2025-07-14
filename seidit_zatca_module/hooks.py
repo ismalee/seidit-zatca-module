@@ -25,13 +25,15 @@ doc = [
 	{ "type" : "doctype", "name" : "ZATCA Settings" },
 	{ "type" : "title", "label" : "ZATCA Setup Wizard" },
 	{ "type" : "page", "name" : "zatca-setup-wizard" },
+	{ "type" : "title", "label" : "ZATCA Logs" },
+	{ "type" : "doctype", "name" : "ZATCA Log" },
 ]
 
 # Installation
 on_install = "seidit_zatca_module.install.install"
 
 # Uninstallation
-on_uninstall = "seidit_zatca_module.uninstall.uninstall"
+on_uninstall = "seidit_zatca_module.install.uninstall"
 
 # Desk Notifications
 # See frappe.core.notifications.get_notification_config
@@ -88,18 +90,11 @@ doc_events = {
 # Overriding JS Methods
 # override_js = "assets/js/seidit_zatca_module.min.js"
 
-# Document Events
-# doc_events = {
-# 	"Sales Invoice": {
-# 		"on_submit": "seidit_zatca_module.zatca_phase2_module.submit_to_zatca",
-# 		"on_cancel": "seidit_zatca_module.zatca_phase2_module.cancel_zatca_invoice"
-# 	}
-# }
-
 required_apps = [
 	"erpnext"
 ]
 
+# Add to apps screen
 add_to_apps_screen = [
 	{
 		"name": "seidit_zatca_module",
@@ -108,4 +103,51 @@ add_to_apps_screen = [
 		"color": "blue",
 		"category": "Integrations"
 	}
-] 
+]
+
+# Add menu items automatically
+def after_migrate():
+    """Create menu items after migration"""
+    import frappe
+    
+    # Create ZATCA Setup Wizard menu item
+    if not frappe.db.exists("Desktop Icon", "ZATCA Setup Wizard"):
+        frappe.get_doc({
+            'doctype': 'Desktop Icon',
+            'module_name': 'SEIDiT ZATCA',
+            'label': 'ZATCA Setup Wizard',
+            'icon': 'octicon octicon-gear',
+            'type': 'page',
+            'link': 'zatca-setup-wizard',
+            'color': '#007bff',
+            'description': 'Complete ZATCA Phase 2 setup wizard',
+            'category': 'Integrations'
+        }).insert()
+    
+    # Create ZATCA Settings menu item
+    if not frappe.db.exists("Desktop Icon", "ZATCA Settings"):
+        frappe.get_doc({
+            'doctype': 'Desktop Icon',
+            'module_name': 'SEIDiT ZATCA',
+            'label': 'ZATCA Settings',
+            'icon': 'octicon octicon-settings',
+            'type': 'doctype',
+            'link': 'ZATCA Settings',
+            'color': '#28a745',
+            'description': 'Configure ZATCA settings and credentials',
+            'category': 'Integrations'
+        }).insert()
+    
+    # Create ZATCA Logs menu item
+    if not frappe.db.exists("Desktop Icon", "ZATCA Logs"):
+        frappe.get_doc({
+            'doctype': 'Desktop Icon',
+            'module_name': 'SEIDiT ZATCA',
+            'label': 'ZATCA Logs',
+            'icon': 'octicon octicon-list-ordered',
+            'type': 'doctype',
+            'link': 'ZATCA Log',
+            'color': '#ffc107',
+            'description': 'View ZATCA processing logs and status',
+            'category': 'Integrations'
+        }).insert() 
